@@ -10,4 +10,8 @@ public class SmartExpensesDataContext : IdentityDbContext<User>
         : base(options)
     {
     }
+
+    public DbSet<Account> Accounts { get; set; } = null!;
+
+    public DbSet<Transaction> Transactions { get; set; } = null!;
 }
