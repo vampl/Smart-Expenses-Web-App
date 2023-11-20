@@ -11,7 +11,7 @@ public class SmartExpensesDataContext : IdentityDbContext<User>
     {
     }
 
-    public DbSet<Account> Accounts { get; set; } = null!;
+    public DbSet<Account> Accounts { get; set; } = default!;
 
-    public DbSet<Transaction> Transactions { get; set; } = null!;
+    public DbSet<Transaction> Transactions { get; set; } = default!;
 }
