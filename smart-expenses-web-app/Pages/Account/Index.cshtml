@@ -1,5 +1,4 @@
 @page
-@using Humanizer
 @model IndexModel
 
 @{
@@ -8,53 +7,58 @@
 }
 
 <div class="container">
-  <p>
-      <a asp-page="Create">Створити новий</a>
-  </p>
-  
-  <table class="table">
-      <thead>
-          <tr>
-              <th>
-                  @Html.DisplayNameFor(model => model.Account[0].AccountType)
-              </th>
-              <th>
-                  @Html.DisplayNameFor(model => model.Account[0].Title)
-              </th>
-              <th>
-                  @Html.DisplayNameFor(model => model.Account[0].Amount)
-              </th>
-              <th>
-                  @Html.DisplayNameFor(model => model.Account[0].CurrencyCode)
-              </th>
-              <th>
-                  
-              </th>
-          </tr>
-      </thead>
-      <tbody>
-      @foreach (var item in Model.Account)
-      {
-          <tr>
-              <td>
-                  @item.AccountType.ToString()
-              </td>
-              <td>
-                  @Html.DisplayFor(modelItem => item.Title)
-              </td>
-              <td>
-                  @Html.DisplayFor(modelItem => item.Amount)
-              </td>
-              <td>
-                  @Html.DisplayFor(modelItem => item.CurrencyCode)
-              </td>
-              <td>
-                  <a asp-page="./Edit" asp-route-id="@item.Id">Редагувати</a> |
-                  <a asp-page="./Details" asp-route-id="@item.Id">Деталі</a> |
-                  <a asp-page="./Delete" asp-route-id="@item.Id">Видалити</a>
-              </td>
-          </tr>
-      }
-      </tbody>
-  </table>
+    
+    <div class="container justify-content-end text-end">
+        <p>
+            <a asp-page="Create">Створити новий</a>
+        </p>
+    </div>
+    
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Account[0].AccountType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Account[0].Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Account[0].Amount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Account[0].CurrencyCode)
+                </th>
+                <th>
+        
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Account)
+            {
+                <tr>
+                    <td>
+                        @item.AccountType.ToString()
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CurrencyCode)
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Редагувати</a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id">Деталі</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id">Видалити</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 </div>
