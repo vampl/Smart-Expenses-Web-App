@@ -24,9 +24,9 @@ public class Account
     
     [Display(Name = "Валюта")]
     public CurrencyCode CurrencyCode { get; set; }
-    
-    [ForeignKey(nameof(UserId))]
-    public User User { get; set; } = null!;
-    
-    public ICollection<Transaction> Transactions { get; set; } = null!;
+
+    [ForeignKey(nameof(UserId))] 
+    public virtual User? User { get; set; }
+
+    public virtual ICollection<Transaction>? Transactions { get; set; }
 }

@@ -36,8 +36,8 @@ public class Transaction
     public string? Description { get; set; }
     
     [ForeignKey(nameof(UserId))]
-    public User User { get; set; } = null!;
+    public User? User { get; set; }
 
     [ForeignKey(nameof(AccountId))]
-    public Account Account { get; set; } = null!;
+    public virtual Account? Account { get; set; }
 }
