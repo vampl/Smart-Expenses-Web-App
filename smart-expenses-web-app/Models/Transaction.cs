@@ -38,6 +38,7 @@ public class Transaction
     [ForeignKey(nameof(UserId))]
     public User? User { get; set; }
 
+    [Display(Name = "Рахунок")]
     [ForeignKey(nameof(AccountId))]
     public virtual Account? Account { get; set; }
 }
