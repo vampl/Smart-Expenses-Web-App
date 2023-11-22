@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -5,6 +6,7 @@ using smart_expenses_web_app.Data;
 
 namespace smart_expenses_web_app.Pages.Account;
 
+[Authorize]
 public class DetailsModel : PageModel
 {
     private readonly SmartExpensesDataContext _context;
@@ -18,18 +20,20 @@ public class DetailsModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(long? id)
     {
-        if (id == null || _context.Accounts == null)
+        if (id == null)
         {
             return NotFound();
         }
 
         var account = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == id);
+        
         if (account == null)
         {
             return NotFound();
         }
 
         Account = account;
+        
         return Page();
     }
 }
