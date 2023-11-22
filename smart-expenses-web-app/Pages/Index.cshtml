@@ -1,10 +1,69 @@
 ﻿@page
+@inject SignInManager<User> SignInManager
+@using Microsoft.AspNetCore.Identity
+@using smart_expenses_web_app.Models
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Головна сторінка";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-subtitle">
+                        Витрати
+                    </div>
+
+                    <div class="card-text">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-subtitle">
+                        Надходження
+                    </div>
+
+                    <div class="card-text">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="col-md-4">
+
+            </div>
+
+            <div class="col-md-4">
+
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="px-4 py-5 my-5 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="d-block mx-auto mb-4 bi bi-wallet" viewBox="0 0 16 16">
+          <path d="M0 3a2 2 0 0 1 2-2h13.5a.5.5 0 0 1 0 1H15v2a1 1 0 0 1 1 1v8.5a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 0 12.5zm1 1.732V12.5A1.5 1.5 0 0 0 2.5 14h12a.5.5 0 0 0 .5-.5V5H2a1.99 1.99 0 0 1-1-.268M1 3a1 1 0 0 0 1 1h12V2H2a1 1 0 0 0-1 1"/>
+        </svg>
+
+        <h1 class="display-6 fw-bold text-body-emphasis">Інформаційна система "Розумні витрати"</h1>
+
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">
+                "Розумні витрати" - це додаток для ефективного керування грошима. Відстежуйте, аналізуйте та керуйте фінансами розумно!
+            </p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a class="btn btn-primary btn-lg px-4 gap-3" asp-area="Identity" asp-page="/Account/Register">Зараєструватись</a>
+                <a class="btn btn-outline-secondary btn-lg px-4" asp-area="Identity" asp-page="/Account/Login">Увійти</a>
+            </div>
+        </div>
+    </div>
+}
