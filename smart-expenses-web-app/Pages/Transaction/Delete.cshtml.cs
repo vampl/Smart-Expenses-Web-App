@@ -19,12 +19,14 @@ public class DeleteModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(long? id)
     {
-        if (id == null || _context.Transactions == null)
+        if (id == null)
         {
             return NotFound();
         }
 
-        var transaction = await _context.Transactions.FirstOrDefaultAsync(m => m.Id == id);
+        var transaction = await _context.Transactions
+            .Include(t=> t.Account)
+            .FirstOrDefaultAsync(m => m.Id == id);
 
         if (transaction == null)
         {
@@ -37,18 +39,22 @@ public class DeleteModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(long? id)
     {
-        if (id == null || _context.Transactions == null)
+        if (id == null)
         {
             return NotFound();
         }
         var transaction = await _context.Transactions.FindAsync(id);
 
-        if (transaction != null)
+        if (transaction == null)
         {
-            Transaction = transaction;
-            _context.Transactions.Remove(Transaction);
-            await _context.SaveChangesAsync();
+            return RedirectToPage("./Index");
         }
+        
+        Transaction = transaction;
+            
+        _context.Transactions.Remove(Transaction);
+            
+        await _context.SaveChangesAsync();
 
         return RedirectToPage("./Index");
     }
