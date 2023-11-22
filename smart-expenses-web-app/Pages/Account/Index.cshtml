@@ -9,9 +9,7 @@
 <div class="container">
     
     <div class="container justify-content-end text-end">
-        <p>
-            <a asp-page="Create">Створити новий</a>
-        </p>
+        <a asp-page="Create">Створити новий</a>
     </div>
     
     <div class="container">
@@ -21,20 +19,25 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Account[0].AccountType)
                 </th>
+                
                 <th>
                     @Html.DisplayNameFor(model => model.Account[0].Title)
                 </th>
+                
                 <th>
                     @Html.DisplayNameFor(model => model.Account[0].Amount)
                 </th>
+                
                 <th>
                     @Html.DisplayNameFor(model => model.Account[0].CurrencyCode)
                 </th>
+                
                 <th>
         
                 </th>
             </tr>
             </thead>
+            
             <tbody>
             @foreach (var item in Model.Account)
             {
@@ -42,15 +45,19 @@
                     <td>
                         @item.AccountType.ToString()
                     </td>
+                    
                     <td>
-                        @Html.DisplayFor(modelItem => item.Title)
+                        @item.Title
                     </td>
+                    
                     <td>
-                        @Html.DisplayFor(modelItem => item.Amount)
+                        @item.Amount
                     </td>
+                    
                     <td>
-                        @Html.DisplayFor(modelItem => item.CurrencyCode)
+                        @item.CurrencyCode.ToString()
                     </td>
+                    
                     <td>
                         <a asp-page="./Edit" asp-route-id="@item.Id">Редагувати</a> |
                         <a asp-page="./Details" asp-route-id="@item.Id">Деталі</a> |
