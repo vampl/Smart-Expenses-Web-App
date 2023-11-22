@@ -27,6 +27,9 @@ public class CreateModel : PageModel
     
     public List<SelectListItem> CurrencyCodesList { get; set; } = default!;
     
+    [BindProperty]
+    public Models.Account Account { get; set; } = default!;
+    
     public IActionResult OnGet()
     {
         UserId = _userManager.GetUserId(User);
@@ -46,11 +49,7 @@ public class CreateModel : PageModel
 
         return Page();
     }
-
-    [BindProperty]
-    public Models.Account Account { get; set; } = default!;
-        
-
+    
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
