@@ -18,18 +18,22 @@ public class DetailsModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(long? id)
     {
-        if (id == null || _context.Transactions == null)
+        if (id == null)
         {
             return NotFound();
         }
 
-        var transaction = await _context.Transactions.FirstOrDefaultAsync(m => m.Id == id);
+        var transaction = await _context.Transactions
+            .Include(t => t.Account)
+            .FirstOrDefaultAsync(m => m.Id == id);
+        
         if (transaction == null)
         {
             return NotFound();
         }
 
         Transaction = transaction;
+        
         return Page();
     }
 }
