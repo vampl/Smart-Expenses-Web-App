@@ -32,7 +32,7 @@
                             <div class="form-group">
                                 <label asp-for="Account.AccountType" class="control-label"></label>
                                 
-                                <select asp-for="Account.AccountType" class="form-control" asp-items="Model.AccountTypesList"></select>
+                                <select asp-for="Account.AccountType" class="form-control" asp-items="Model.AccountTypesSelectList"></select>
                                 
                                 <span asp-validation-for="Account.AccountType" class="text-danger"></span>
                             </div>
@@ -56,7 +56,7 @@
                             <div class="form-group">
                                 <label asp-for="Account.CurrencyCode" class="control-label"></label>
                                 
-                                <select asp-for="Account.CurrencyCode" class="form-control" asp-items="Model.CurrencyCodesList"></select>
+                                <select asp-for="Account.CurrencyCode" class="form-control" asp-items="Model.CurrencyCodesSelectList"></select>
                                 
                                 <span asp-validation-for="Account.CurrencyCode" class="text-danger"></span>
                             </div>
