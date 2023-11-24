@@ -61,7 +61,7 @@ public class EditModel : PageModel
         CurrencyCodesSelectList = new SelectList(currencyCodesSelectListItems, "Value", "Text");
         
         // Check if account exist in database
-        var account =  await _context.Accounts.FirstOrDefaultAsync(m => m.Id == id);
+        var account =  await _context.Accounts.FirstOrDefaultAsync(account => account.Id == id);
         if (account == null)
         {
             return NotFound();
@@ -90,10 +90,10 @@ public class EditModel : PageModel
 
         // Set entity state to modified
         _context.Attach(Account).State = EntityState.Modified;
-
-        // Save changes to database
+        
         try
         {
+            // Save changes to database
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
