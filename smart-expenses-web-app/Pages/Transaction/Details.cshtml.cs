@@ -11,27 +11,31 @@ public class DetailsModel : PageModel
 
     public DetailsModel(SmartExpensesDataContext context)
     {
+        // Inject required services
         _context = context;
+
+        Transaction = new Models.Transaction();
     }
 
-    public Models.Transaction Transaction { get; set; } = default!; 
+    public Models.Transaction Transaction { get; set; }
 
     public async Task<IActionResult> OnGetAsync(long? id)
     {
+        // Check if Id passed
         if (id == null)
         {
             return NotFound();
         }
 
-        var transaction = await _context.Transactions
-            .Include(t => t.Account)
+        // Check if transaction is exist in database
+        var transaction = await _context.Transactions.Include(t => t.Account)
             .FirstOrDefaultAsync(m => m.Id == id);
-        
         if (transaction == null)
         {
             return NotFound();
         }
 
+        // Fill transaction form
         Transaction = transaction;
         
         return Page();
