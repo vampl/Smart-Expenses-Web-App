@@ -1,89 +1,88 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using smart_expenses_web_app.Data;
 using smart_expenses_web_app.Enums;
-using smart_expenses_web_app.Models;
+using smart_expenses_web_app.Services;
 
 namespace smart_expenses_web_app.Pages.Transaction;
 
 public class EditModel : PageModel
 {
     private readonly SmartExpensesDataContext _context;
-    private readonly UserManager<User> _userManager;
+    private readonly UserService _userService;
 
-    public EditModel(SmartExpensesDataContext context, UserManager<User> userManager)
+    public EditModel(SmartExpensesDataContext context, UserService userService)
     {
+        // Inject required services
         _context = context;
-        _userManager = userManager;
+        _userService = userService;
+
+        Transaction = new Models.Transaction();
     }
 
     public long? Id { get; set; }
-
     public string? UserId { get; set; }
-
-    public List<SelectListItem> CurrencyCodesList { get; set; } = new();
-
-    public List<SelectListItem> TransactionTypesList { get; set; } = new();
-
-    public List<SelectListItem> AccountsIdsList { get; set; } = new();
+    public SelectList? TransactionTypesSelectList { get; set; }
+    public SelectList? CurrencyCodesSelectList { get; set; }
+    public SelectList? AccountsSelectList { get; set; }
     
     [BindProperty]
-    public Models.Transaction Transaction { get; set; } = default!;
+    public Models.Transaction Transaction { get; set; }
 
     public async Task<IActionResult> OnGetAsync(long? id)
     {
+        // Check if Id passed
         if (id == null)
         {
             return NotFound();
         }
 
+        // Access current account Id
         Id = id;
         
-        UserId = _userManager.GetUserId(User);
-
-        TransactionTypesList = new List<SelectListItem>
-        {
-            new(TransactionType.Withdraw.ToString(), TransactionType.Withdraw.ToString()),
-            new(TransactionType.Deposit.ToString(), TransactionType.Deposit.ToString())
-        };
+        // Access current session user guid
+        UserId = _userService.GetUserId();
         
-        CurrencyCodesList = new List<SelectListItem>
-        {
-            new(CurrencyCode.EUR.ToString(), (CurrencyCode.EUR).ToString()),
-            new(CurrencyCode.UAH.ToString(), (CurrencyCode.UAH).ToString()),
-            new(CurrencyCode.USD.ToString(), (CurrencyCode.USD).ToString()),
-        };
+        // Prepare form account types list
+        var transactionTypesSelectListItems = Enum.GetValues<TransactionType>()
+            .Select(transactionType => new SelectListItem { Text = transactionType.ToString(), Value = transactionType.ToString() })
+            .ToList();
+        TransactionTypesSelectList = new SelectList(transactionTypesSelectListItems, "Value", "Text");
         
-        var transaction =  await _context.Transactions.FirstOrDefaultAsync(m => m.Id == id);
+        // Prepare form currency codes list
+        var currencyCodesSelectListItems = Enum.GetValues<CurrencyCode>()
+            .Select(currencyCode => new SelectListItem { Text = currencyCode.ToString(), Value = currencyCode.ToString() })
+            .ToList();
+        CurrencyCodesSelectList = new SelectList(currencyCodesSelectListItems, "Value", "Text");
         
+        // Prepare form accounts list
+        var accountsSelectListItems = _context.Accounts.Where(account => account.UserId == UserId)
+            .Select(account => new SelectListItem { Text = account.Title, Value = account.Id.ToString() })
+            .ToList();
+        AccountsSelectList = new SelectList(accountsSelectListItems, "Value", "Text");
+        
+        // Check if account exist in database
+        var transaction =  await _context.Transactions.FirstOrDefaultAsync(transaction => transaction.Id == id);
         if (transaction == null)
         {
             return NotFound();
         }
         
+        // Fill account form
         Transaction = transaction;
 
-        var accountIds = _context.Accounts
-            .Where(a => a.UserId == UserId)
-            .Select(a => new { a.Title, a.Id });
-
-        foreach (var item in accountIds)
-        {
-            var selectListItem = new SelectListItem(item.Title, item.Id.ToString());
-            AccountsIdsList.Add(selectListItem);
-        }
-        
         return Page();
     }
     
     public async Task<IActionResult> OnPostAsync()
     {
+        // Check if can be pushed to database
         if (!ModelState.IsValid)
         {
             var errors = ModelState.Values.SelectMany(v => v.Errors);
+            
             foreach (var error in errors)
             {
                 Console.WriteLine(error.ErrorMessage);
@@ -92,14 +91,17 @@ public class EditModel : PageModel
             return Page();
         }
 
+        // Set entity state to modified
         _context.Attach(Transaction).State = EntityState.Modified;
-
+        
         try
         {
+            // Save changes to database
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
+            // Check if account exist while error
             if (!TransactionExists(Transaction.Id))
             {
                 return NotFound();
