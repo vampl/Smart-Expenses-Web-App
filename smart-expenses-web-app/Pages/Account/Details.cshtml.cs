@@ -14,24 +14,28 @@ public class DetailsModel : PageModel
     public DetailsModel(SmartExpensesDataContext context)
     {
         _context = context;
+        
+        Account = new Models.Account();
     }
 
-    public Models.Account Account { get; set; } = default!; 
+    public Models.Account Account { get; set; }
 
     public async Task<IActionResult> OnGetAsync(long? id)
     {
+        // Check if Id passed
         if (id == null)
         {
             return NotFound();
         }
 
+        // Check if account is exist in database
         var account = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == id);
-        
         if (account == null)
         {
             return NotFound();
         }
 
+        // Fill account form
         Account = account;
         
         return Page();
