@@ -34,10 +34,10 @@ public class CreateModel : PageModel
         UserId = _userService.GetUserId();
         
         // Prepare form account types list
-        var accountTypesSelectListItems = Enum.GetValues<AccountType>()
-            .Select(accountType => new SelectListItem { Text = accountType.ToString(), Value = accountType.ToString() })
+        var transactionTypesSelectListItems = Enum.GetValues<TransactionType>()
+            .Select(transactionType => new SelectListItem { Text = transactionType.ToString(), Value = transactionType.ToString() })
             .ToList();
-        TransactionTypesSelectList = new SelectList(accountTypesSelectListItems, "Value", "Text");
+        TransactionTypesSelectList = new SelectList(transactionTypesSelectListItems, "Value", "Text");
         
         // Prepare form currency codes list
         var currencyCodesSelectListItems = Enum.GetValues<CurrencyCode>()
@@ -45,11 +45,11 @@ public class CreateModel : PageModel
             .ToList();
         CurrencyCodesSelectList = new SelectList(currencyCodesSelectListItems, "Value", "Text");
         
-        // Prepare form currency codes list
-        var accountSelectListItems = _context.Accounts.Where(account => account.UserId == UserId)
+        // Prepare form accounts list
+        var accountsSelectListItems = _context.Accounts.Where(account => account.UserId == UserId)
             .Select(account => new SelectListItem { Text = account.Title, Value = account.Id.ToString() })
             .ToList();
-        AccountsSelectList = new SelectList(accountSelectListItems, "Value", "Text");
+        AccountsSelectList = new SelectList(accountsSelectListItems, "Value", "Text");
         
         return Page();
     }
