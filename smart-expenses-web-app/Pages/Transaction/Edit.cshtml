@@ -32,7 +32,7 @@
                             <div class="form-group">
                                 <label asp-for="Transaction.AccountId" class="control-label"></label>
                                 
-                                <select asp-for="Transaction.AccountId" class="form-control" asp-items="Model.AccountsIdsList"></select>
+                                <select asp-for="Transaction.AccountId" class="form-control" asp-items="Model.AccountsSelectList"></select>
                                 
                                 <span asp-validation-for="Transaction.AccountId" class="text-danger"></span>
                             </div>
@@ -40,7 +40,7 @@
                             <div class="form-group">
                                 <label asp-for="Transaction.TransactionType" class="control-label"></label>
                                 
-                                <select asp-for="Transaction.TransactionType" class="form-control" asp-items="Model.TransactionTypesList"></select>
+                                <select asp-for="Transaction.TransactionType" class="form-control" asp-items="Model.TransactionTypesSelectList"></select>
                                 
                                 <span asp-validation-for="Transaction.TransactionType" class="text-danger"></span>
                             </div>
@@ -64,7 +64,7 @@
                             <div class="form-group">
                                 <label asp-for="Transaction.CurrencyCode" class="control-label"></label>
                                 
-                                <select asp-for="Transaction.CurrencyCode" class="form-control" asp-items="Model.CurrencyCodesList"></select>
+                                <select asp-for="Transaction.CurrencyCode" class="form-control" asp-items="Model.CurrencyCodesSelectList"></select>
                                 
                                 <span asp-validation-for="Transaction.CurrencyCode" class="text-danger"></span>
                             </div>
