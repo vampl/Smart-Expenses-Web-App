@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using smart_expenses_web_app.Data;
 using smart_expenses_web_app.Models;
+using smart_expenses_web_app.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,9 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 // Add razor pages to application services
 builder.Services.AddRazorPages();
+
+// Add data services
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 
