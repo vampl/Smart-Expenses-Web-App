@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using smart_expenses_web_app.Data;
 using smart_expenses_web_app.Enums;
 using smart_expenses_web_app.Models;
+using smart_expenses_web_app.Services;
 
 namespace smart_expenses_web_app.Pages.Account;
 
@@ -14,56 +15,59 @@ namespace smart_expenses_web_app.Pages.Account;
 public class EditModel : PageModel
 {
     private readonly SmartExpensesDataContext _context;
-    private readonly UserManager<User> _userManager;
+    private readonly UserService _userService;
 
-    public EditModel(SmartExpensesDataContext context, UserManager<User> userManager)
+    public EditModel(SmartExpensesDataContext context, UserService userService)
     {
+        // Inject required services
         _context = context;
-        _userManager = userManager;
+        _userService = userService;
+
+        Account = new Models.Account();
     }
 
     public long? Id { get; set; }
-    
     public string? UserId { get; set; }
-    
-    public List<SelectListItem> AccountTypesList { get; set; } = default!;
-    
-    public List<SelectListItem> CurrencyCodesList { get; set; } = default!;
+    public SelectList? AccountTypesSelectList { get; set; }
+    public SelectList? CurrencyCodesSelectList { get; set; }
     
     [BindProperty]
-    public Models.Account Account { get; set; } = default!;
+    public Models.Account Account { get; set; }
 
     public async Task<IActionResult> OnGetAsync(long? id)
     {
+        // Check if Id passed
         if (id == null)
         {
             return NotFound();
         }
 
+        // Access current account Id
         Id = id;
         
-        UserId = _userManager.GetUserId(User);
-
-        AccountTypesList = new List<SelectListItem>
-        {
-            new(AccountType.Cash.ToString(), AccountType.Cash.ToString()),
-            new(AccountType.Card.ToString(), AccountType.Card.ToString())
-        };
+        // Access current session user guid
+        UserId = _userService.GetUserId();
         
-        CurrencyCodesList = new List<SelectListItem>
-        {
-            new(CurrencyCode.EUR.ToString(), (CurrencyCode.EUR).ToString()),
-            new(CurrencyCode.UAH.ToString(), (CurrencyCode.UAH).ToString()),
-            new(CurrencyCode.USD.ToString(), (CurrencyCode.USD).ToString()),
-        };
+        // Prepare form account types list
+        var accountTypesSelectListItems = Enum.GetValues<AccountType>()
+            .Select(accountType => new SelectListItem { Text = accountType.ToString(), Value = accountType.ToString() })
+            .ToList();
+        AccountTypesSelectList = new SelectList(accountTypesSelectListItems, "Value", "Text");
         
+        // Prepare form currency codes list
+        var currencyCodesSelectListItems = Enum.GetValues<CurrencyCode>()
+            .Select(currencyCode => new SelectListItem { Text = currencyCode.ToString(), Value = currencyCode.ToString() })
+            .ToList();
+        CurrencyCodesSelectList = new SelectList(currencyCodesSelectListItems, "Value", "Text");
+        
+        // Check if account exist in database
         var account =  await _context.Accounts.FirstOrDefaultAsync(m => m.Id == id);
-        
         if (account == null)
         {
             return NotFound();
         }
         
+        // Fill account form
         Account = account;
         
         return Page();
@@ -71,19 +75,30 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        // Check if can be pushed to database
         if (!ModelState.IsValid)
         {
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
+            
+            foreach (var error in errors)
+            {
+                Console.WriteLine(error.ErrorMessage);
+            }
+            
             return Page();
         }
 
+        // Set entity state to modified
         _context.Attach(Account).State = EntityState.Modified;
 
+        // Save changes to database
         try
         {
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
+            // Check if account exist while error
             if (!AccountExists(Account.Id))
             {
                 return NotFound();
