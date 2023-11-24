@@ -13,6 +13,7 @@ public class IndexModel : PageModel
     
     public IndexModel(SmartExpensesDataContext context, UserService userService)
     {
+        // Inject required services
         _context = context;
         _userService = userService;
 
