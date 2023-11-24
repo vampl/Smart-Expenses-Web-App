@@ -26,13 +26,16 @@ public class IndexModel : PageModel
 
     public void OnGet()
     {
+        // Get user guid
         var userId = _userService.GetUserId();
 
+        // gGet user transactions
         Transactions = _context.Transactions
             .Include(t => t.Account)
             .Where(t => t.UserId == userId)
             .ToList();
         
+        // Get user accounts
         Accounts = _context.Accounts
             .Where(a => a.UserId == userId)
             .ToList();
