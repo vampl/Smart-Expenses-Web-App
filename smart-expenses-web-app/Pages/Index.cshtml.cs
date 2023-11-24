@@ -1,30 +1,31 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using smart_expenses_web_app.Data;
-using smart_expenses_web_app.Models;
+using smart_expenses_web_app.Services;
 
 namespace smart_expenses_web_app.Pages;
 
 public class IndexModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
     private readonly SmartExpensesDataContext _context;
-    private readonly UserManager<User> _userManager;
+
+    private readonly UserService _userService;
     
-    public IndexModel(ILogger<IndexModel> logger, SmartExpensesDataContext context, UserManager<User> userManager)
+    public IndexModel(SmartExpensesDataContext context, UserService userService)
     {
-        _logger = logger;
         _context = context;
-        _userManager = userManager;
+        _userService = userService;
+
+        Transactions = new List<Models.Transaction>();
+        Accounts = new List<Models.Account>();
     }
 
-    public List<Models.Transaction> Transactions { get; set; } = new();
-    public List<Models.Account> Accounts { get; set; } = new();
+    public List<Models.Transaction> Transactions { get; set; }
+    public List<Models.Account> Accounts { get; set; }
 
     public void OnGet()
     {
-        var userId = _userManager.GetUserId(User);
+        var userId = _userService.GetUserId();
 
         Transactions = _context.Transactions
             .Include(t => t.Account)
