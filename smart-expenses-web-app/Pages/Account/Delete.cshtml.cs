@@ -13,26 +13,31 @@ public class DeleteModel : PageModel
 
     public DeleteModel(SmartExpensesDataContext context)
     {
+        // Inject required services
         _context = context;
+
+        Account = new Models.Account();
     }
 
     [BindProperty]
-    public Models.Account Account { get; set; } = default!;
-
+    public Models.Account Account { get; set; }
+    
     public async Task<IActionResult> OnGetAsync(long? id)
     {
+        // Check if Id passed
         if (id == null)
         {
             return NotFound();
         }
 
-        var account = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == id);
-
+        // Check if account is exist in database
+        var account = await _context.Accounts.FirstOrDefaultAsync(account => account.Id == id);
         if (account == null)
         {
             return NotFound();
         }
 
+        // Fill account form
         Account = account;
         
         return Page();
@@ -40,22 +45,22 @@ public class DeleteModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(long? id)
     {
+        // Check if Id passed
         if (id == null)
         {
             return NotFound();
         }
-        
-        var account = await _context.Accounts.FindAsync(id);
 
+        // Check if account is exist in database
+        var account = await _context.Accounts.FindAsync(id);
         if (account == null)
         {
             return RedirectToPage("./Index");
         }
         
+        // Delete account from database & save
         Account = account;
-        
         _context.Accounts.Remove(Account);
-        
         await _context.SaveChangesAsync();
 
         return RedirectToPage("./Index");
