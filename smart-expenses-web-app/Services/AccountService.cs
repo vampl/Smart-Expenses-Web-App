@@ -49,7 +49,7 @@ public class AccountService
         }
     }
     
-    public async Task DeleteUserAccount(Account deleteAccount)
+    public async Task DeleteUserAccountAsync(Account deleteAccount)
     {
         _dataContext.Accounts.Remove(deleteAccount);
         await _dataContext.SaveChangesAsync();
@@ -57,6 +57,6 @@ public class AccountService
 
     public bool IsExist(long id)
     {
-        return _dataContext.Accounts.Any(e => e.Id == id);
+        return _dataContext.Accounts.Any(account => account.Id == id);
     }
 }
