@@ -61,7 +61,7 @@ public class DeleteModel : PageModel
         
         // Delete account from database & save
         Account = account;
-        await _accountService.DeleteUserAccount(Account);
+        await _accountService.DeleteUserAccountAsync(Account);
 
         return RedirectToPage("./Index");
     }
