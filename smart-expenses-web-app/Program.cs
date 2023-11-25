@@ -46,6 +46,7 @@ builder.Services.AddRazorPages();
 // Add data services
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<TransactionService>();
 
 var app = builder.Build();
 
