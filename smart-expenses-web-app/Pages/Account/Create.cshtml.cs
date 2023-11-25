@@ -11,13 +11,13 @@ namespace smart_expenses_web_app.Pages.Account;
 [Authorize]
 public class CreateModel : PageModel
 {
-    private readonly SmartExpensesDataContext _context;
+    private readonly AccountService _accountService;
     private readonly UserService _userService;
 
-    public CreateModel(SmartExpensesDataContext context, UserService userService)
+    public CreateModel(AccountService accountService, UserService userService)
     {
         // Inject required services
-        _context = context;
+        _accountService = accountService;
         _userService = userService;
 
         Account = new Models.Account();
@@ -66,8 +66,7 @@ public class CreateModel : PageModel
         }
         
         // Push account to database & save
-        _context.Accounts.Add(Account);
-        await _context.SaveChangesAsync();
+        await _accountService.AddUserAccountAsync(Account);
         
         return RedirectToPage("./Index");
     }
