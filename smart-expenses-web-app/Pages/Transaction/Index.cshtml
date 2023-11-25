@@ -14,31 +14,31 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Transaction[0].TransactionType)
+                    @Html.DisplayNameFor(model => model.Transactions[0].TransactionType)
                 </th>
                 
                 <th>
-                    @Html.DisplayNameFor(model => model.Transaction[0].Title)
+                    @Html.DisplayNameFor(model => model.Transactions[0].Title)
                 </th>
                 
                 <th>
-                    @Html.DisplayNameFor(model => model.Transaction[0].Amount)
+                    @Html.DisplayNameFor(model => model.Transactions[0].Amount)
                 </th>
                 
                 <th>
-                    @Html.DisplayNameFor(model => model.Transaction[0].CurrencyCode)
+                    @Html.DisplayNameFor(model => model.Transactions[0].CurrencyCode)
                 </th>
                 
                 <th>
-                    @Html.DisplayNameFor(model => model.Transaction[0].DateTime)
+                    @Html.DisplayNameFor(model => model.Transactions[0].DateTime)
                 </th>
                 
                 <th>
-                    @Html.DisplayNameFor(model => model.Transaction[0].Description)
+                    @Html.DisplayNameFor(model => model.Transactions[0].Description)
                 </th>
                 
                 <th>
-                    @Html.DisplayNameFor(model => model.Transaction[0].Account)
+                    @Html.DisplayNameFor(model => model.Transactions[0].Account)
                 </th>
                 
                 <th>
@@ -47,7 +47,7 @@
             </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model.Transaction)
+        @foreach (var item in Model.Transactions!)
         {
             <tr>
                 <td>
