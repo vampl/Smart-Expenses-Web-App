@@ -3,18 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using smart_expenses_web_app.Data;
+using smart_expenses_web_app.Services;
 
 namespace smart_expenses_web_app.Pages.Account;
 
 [Authorize]
 public class DeleteModel : PageModel
 {
-    private readonly SmartExpensesDataContext _context;
+    private readonly AccountService _accountService;
 
-    public DeleteModel(SmartExpensesDataContext context)
+    public DeleteModel(AccountService accountService)
     {
         // Inject required services
-        _context = context;
+        _accountService = accountService;
 
         Account = new Models.Account();
     }
@@ -31,7 +32,7 @@ public class DeleteModel : PageModel
         }
 
         // Check if account is exist in database
-        var account = await _context.Accounts.FirstOrDefaultAsync(account => account.Id == id);
+        var account = await _accountService.GetAccountAsync(id);
         if (account == null)
         {
             return NotFound();
@@ -52,7 +53,7 @@ public class DeleteModel : PageModel
         }
 
         // Check if account is exist in database
-        var account = await _context.Accounts.FindAsync(id);
+        var account = await _accountService.GetAccountAsync(id);
         if (account == null)
         {
             return RedirectToPage("./Index");
@@ -60,8 +61,7 @@ public class DeleteModel : PageModel
         
         // Delete account from database & save
         Account = account;
-        _context.Accounts.Remove(Account);
-        await _context.SaveChangesAsync();
+        await _accountService.DeleteUserAccount(Account);
 
         return RedirectToPage("./Index");
     }

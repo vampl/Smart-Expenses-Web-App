@@ -3,17 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using smart_expenses_web_app.Data;
+using smart_expenses_web_app.Services;
 
 namespace smart_expenses_web_app.Pages.Account;
 
 [Authorize]
 public class DetailsModel : PageModel
 {
-    private readonly SmartExpensesDataContext _context;
+    private readonly AccountService _accountService;
 
-    public DetailsModel(SmartExpensesDataContext context)
+    public DetailsModel(AccountService accountService)
     {
-        _context = context;
+        _accountService = accountService;
         
         Account = new Models.Account();
     }
@@ -29,7 +30,7 @@ public class DetailsModel : PageModel
         }
 
         // Check if account is exist in database
-        var account = await _context.Accounts.FirstOrDefaultAsync(m => m.Id == id);
+        var account = await _accountService.GetAccountAsync(id);
         if (account == null)
         {
             return NotFound();

@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using smart_expenses_web_app.Data;
 using smart_expenses_web_app.Services;
 
 namespace smart_expenses_web_app.Pages.Account;
@@ -9,17 +7,19 @@ namespace smart_expenses_web_app.Pages.Account;
 [Authorize]
 public class IndexModel : PageModel
 {
-    private readonly SmartExpensesDataContext _context;
+    private readonly AccountService _accountService;
     private readonly UserService _userService;
     
-    public IndexModel(SmartExpensesDataContext context, UserService userService)
+    public IndexModel(AccountService accountService, UserService userService)
     {
         // Inject required services
-        _context = context;
+        _accountService = accountService;
         _userService = userService;
+
+        Accounts = new List<Models.Account>();
     }
 
-    public IList<Models.Account> Account { get;set; } = default!;
+    public IList<Models.Account>? Accounts { get; set; }
 
     public async Task OnGetAsync()
     {
@@ -27,9 +27,6 @@ public class IndexModel : PageModel
         var userId = _userService.GetUserId();
 
         // Get user Accounts
-        Account = await _context.Accounts
-            .Include(a => a.User)
-            .Where(a => a.UserId == userId)
-            .ToListAsync();
+        Accounts = await _accountService.GetUserAccountsAsync(userId);
     }
 }

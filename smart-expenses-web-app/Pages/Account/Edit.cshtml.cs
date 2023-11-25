@@ -1,12 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using smart_expenses_web_app.Data;
 using smart_expenses_web_app.Enums;
-using smart_expenses_web_app.Models;
 using smart_expenses_web_app.Services;
 
 namespace smart_expenses_web_app.Pages.Account;
@@ -14,14 +10,14 @@ namespace smart_expenses_web_app.Pages.Account;
 [Authorize]
 public class EditModel : PageModel
 {
-    private readonly SmartExpensesDataContext _context;
     private readonly UserService _userService;
+    private readonly AccountService _accountService;
 
-    public EditModel(SmartExpensesDataContext context, UserService userService)
+    public EditModel(UserService userService, AccountService accountService)
     {
         // Inject required services
-        _context = context;
         _userService = userService;
+        _accountService = accountService;
 
         Account = new Models.Account();
     }
@@ -61,7 +57,7 @@ public class EditModel : PageModel
         CurrencyCodesSelectList = new SelectList(currencyCodesSelectListItems, "Value", "Text");
         
         // Check if account exist in database
-        var account =  await _context.Accounts.FirstOrDefaultAsync(account => account.Id == id);
+        var account = await _accountService.GetAccountAsync(id);
         if (account == null)
         {
             return NotFound();
@@ -88,30 +84,8 @@ public class EditModel : PageModel
             return Page();
         }
 
-        // Set entity state to modified
-        _context.Attach(Account).State = EntityState.Modified;
-        
-        try
-        {
-            // Save changes to database
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            // Check if account exist while error
-            if (!AccountExists(Account.Id))
-            {
-                return NotFound();
-            }
-
-            throw;
-        }
+        await _accountService.EditUserAccountAsync(Account);
 
         return RedirectToPage("./Index");
-    }
-
-    private bool AccountExists(long id)
-    {
-        return (_context.Accounts?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 }
