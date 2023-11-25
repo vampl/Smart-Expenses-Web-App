@@ -17,19 +17,19 @@
             <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Account[0].AccountType)
+                    @Html.DisplayNameFor(model => model.Accounts[0].AccountType)
                 </th>
                 
                 <th>
-                    @Html.DisplayNameFor(model => model.Account[0].Title)
+                    @Html.DisplayNameFor(model => model.Accounts[0].Title)
                 </th>
                 
                 <th>
-                    @Html.DisplayNameFor(model => model.Account[0].Amount)
+                    @Html.DisplayNameFor(model => model.Accounts[0].Amount)
                 </th>
                 
                 <th>
-                    @Html.DisplayNameFor(model => model.Account[0].CurrencyCode)
+                    @Html.DisplayNameFor(model => model.Accounts[0].CurrencyCode)
                 </th>
                 
                 <th>
@@ -39,7 +39,7 @@
             </thead>
             
             <tbody>
-            @foreach (var item in Model.Account)
+            @foreach (var item in Model.Accounts)
             {
                 <tr>
                     <td>
