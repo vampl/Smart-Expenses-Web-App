@@ -9,14 +9,16 @@ namespace smart_expenses_web_app.Pages.Transaction;
 
 public class CreateModel : PageModel
 {
-    private readonly SmartExpensesDataContext _context;
+    private readonly TransactionService _transactionService;
     private readonly UserService _userService;
+    private readonly AccountService _accountService;
 
-    public CreateModel(SmartExpensesDataContext context, UserService userService)
+    public CreateModel(TransactionService transactionService, UserService userService, AccountService accountService)
     {
-        _context = context;
+        _transactionService = transactionService;
         _userService = userService;
-        
+        _accountService = accountService;
+
         Transaction = new Models.Transaction();
     }
 
@@ -28,7 +30,7 @@ public class CreateModel : PageModel
     [BindProperty]
     public Models.Transaction Transaction { get; set; }
     
-    public IActionResult OnGet()
+    public async Task<IActionResult> OnGet()
     {
         // Access current session user guid
         UserId = _userService.GetUserId();
@@ -46,7 +48,7 @@ public class CreateModel : PageModel
         CurrencyCodesSelectList = new SelectList(currencyCodesSelectListItems, "Value", "Text");
         
         // Prepare form accounts list
-        var accountsSelectListItems = _context.Accounts.Where(account => account.UserId == UserId)
+        var accountsSelectListItems = (await _accountService.GetUserAccountsAsync(UserId))!
             .Select(account => new SelectListItem { Text = account.Title, Value = account.Id.ToString() })
             .ToList();
         AccountsSelectList = new SelectList(accountsSelectListItems, "Value", "Text");
@@ -70,8 +72,7 @@ public class CreateModel : PageModel
         }
 
         // Push transactions to database & save
-        _context.Transactions.Add(Transaction);
-        await _context.SaveChangesAsync();
+        await _transactionService.AddUserTransactionAsync(Transaction);
 
         return RedirectToPage("./Index");
     }

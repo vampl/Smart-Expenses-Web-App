@@ -1,18 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using smart_expenses_web_app.Data;
+using smart_expenses_web_app.Services;
 
 namespace smart_expenses_web_app.Pages.Transaction;
 
 public class DetailsModel : PageModel
 {
-    private readonly SmartExpensesDataContext _context;
+    private readonly TransactionService _transactionService;
 
-    public DetailsModel(SmartExpensesDataContext context)
+    public DetailsModel(TransactionService transactionService)
     {
         // Inject required services
-        _context = context;
+        _transactionService = transactionService;
 
         Transaction = new Models.Transaction();
     }
@@ -28,8 +27,7 @@ public class DetailsModel : PageModel
         }
 
         // Check if transaction is exist in database
-        var transaction = await _context.Transactions.Include(t => t.Account)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        var transaction = await _transactionService.GetTransactionAsync(id);
         if (transaction == null)
         {
             return NotFound();

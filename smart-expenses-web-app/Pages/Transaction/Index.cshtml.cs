@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using smart_expenses_web_app.Data;
 using smart_expenses_web_app.Services;
 
 namespace smart_expenses_web_app.Pages.Transaction;
@@ -9,17 +7,19 @@ namespace smart_expenses_web_app.Pages.Transaction;
 [Authorize]
 public class IndexModel : PageModel
 {
-    private readonly SmartExpensesDataContext _context;
+    private readonly TransactionService _transactionService;
     private readonly UserService _userService;
     
-    public IndexModel(SmartExpensesDataContext context, UserService userService)
+    public IndexModel(TransactionService transactionService, UserService userService)
     {
         // Inject required services
-        _context = context;
+        _transactionService = transactionService;
         _userService = userService;
+
+        Transactions = new List<Models.Transaction>();
     }
 
-    public IList<Models.Transaction> Transaction { get;set; } = default!;
+    public IList<Models.Transaction>? Transactions { get;set; }
 
     public async Task OnGetAsync()
     {
@@ -27,10 +27,6 @@ public class IndexModel : PageModel
         var userId = _userService.GetUserId();
         
         // Get user Transaction
-        Transaction = await _context.Transactions
-            .Include(t => t.Account)
-            .Include(t => t.User)
-            .Where(t => t.UserId == userId)
-            .ToListAsync();
+        Transactions = await _transactionService.GetUserTransactionsAsync(userId);
     }
 }

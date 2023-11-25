@@ -2,17 +2,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using smart_expenses_web_app.Data;
+using smart_expenses_web_app.Services;
 
 namespace smart_expenses_web_app.Pages.Transaction;
 
 public class DeleteModel : PageModel
 {
-    private readonly SmartExpensesDataContext _context;
+    private readonly TransactionService _transactionService;
 
-    public DeleteModel(SmartExpensesDataContext context)
+    public DeleteModel(TransactionService transactionService)
     {
         // Inject required services
-        _context = context;
+        _transactionService = transactionService;
 
         Transaction = new Models.Transaction();
     }
@@ -29,7 +30,7 @@ public class DeleteModel : PageModel
         }
 
         // Check if transaction is exist in database
-        var transaction = await _context.Transactions.FirstOrDefaultAsync(m => m.Id == id);
+        var transaction = await _transactionService.GetTransactionAsync(id);
         if (transaction == null)
         {
             return NotFound();
@@ -50,7 +51,7 @@ public class DeleteModel : PageModel
         }
         
         // Check if transaction is exist in database
-        var transaction = await _context.Transactions.FindAsync(id);
+        var transaction = await _transactionService.GetTransactionAsync(id);
         if (transaction == null)
         {
             return RedirectToPage("./Index");
@@ -58,8 +59,7 @@ public class DeleteModel : PageModel
         
         // Delete transaction from database & save
         Transaction = transaction;
-        _context.Transactions.Remove(Transaction);
-        await _context.SaveChangesAsync();
+        await _transactionService.DeleteUserTransactionAsync(Transaction);
 
         return RedirectToPage("./Index");
     }

@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using smart_expenses_web_app.Data;
 using smart_expenses_web_app.Enums;
 using smart_expenses_web_app.Services;
 
@@ -10,14 +8,16 @@ namespace smart_expenses_web_app.Pages.Transaction;
 
 public class EditModel : PageModel
 {
-    private readonly SmartExpensesDataContext _context;
+    private readonly TransactionService _transactionService;
+    private readonly AccountService _accountService;
     private readonly UserService _userService;
 
-    public EditModel(SmartExpensesDataContext context, UserService userService)
+    public EditModel(TransactionService transactionService, UserService userService, AccountService accountService)
     {
         // Inject required services
-        _context = context;
+        _transactionService = transactionService;
         _userService = userService;
+        _accountService = accountService;
 
         Transaction = new Models.Transaction();
     }
@@ -58,13 +58,13 @@ public class EditModel : PageModel
         CurrencyCodesSelectList = new SelectList(currencyCodesSelectListItems, "Value", "Text");
         
         // Prepare form accounts list
-        var accountsSelectListItems = _context.Accounts.Where(account => account.UserId == UserId)
+        var accountsSelectListItems = (await _accountService.GetUserAccountsAsync(UserId))!
             .Select(account => new SelectListItem { Text = account.Title, Value = account.Id.ToString() })
             .ToList();
         AccountsSelectList = new SelectList(accountsSelectListItems, "Value", "Text");
         
         // Check if account exist in database
-        var transaction =  await _context.Transactions.FirstOrDefaultAsync(transaction => transaction.Id == id);
+        var transaction = await _transactionService.GetTransactionAsync(id);
         if (transaction == null)
         {
             return NotFound();
@@ -91,30 +91,8 @@ public class EditModel : PageModel
             return Page();
         }
 
-        // Set entity state to modified
-        _context.Attach(Transaction).State = EntityState.Modified;
-        
-        try
-        {
-            // Save changes to database
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            // Check if account exist while error
-            if (!TransactionExists(Transaction.Id))
-            {
-                return NotFound();
-            }
-
-            throw;
-        }
+        await _transactionService.EditUserTransactionAsync(Transaction);
 
         return RedirectToPage("./Index");
-    }
-
-    private bool TransactionExists(long id)
-    {
-        return (_context.Transactions?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 }
