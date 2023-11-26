@@ -1,0 +1,49 @@
+@page
+@model DeleteModel
+
+@{
+    ViewData["Title"] = "Видалити рахунок";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <h3 class="text-center">Ви впевнені що бажаєте видалити цей рахунок?</h3>
+        <div class="col-md-4">
+            <div class="card mx-auto mt-5">
+                <h4 class="card-header">Рахунок: @Html.DisplayFor(model => model.Account.Title)</h4>
+
+                <div class="card-text">
+                    <dl class="row mx-auto">
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.Account.AccountType)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.Account.AccountType)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.Account.Amount)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.Account.Amount)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.Account.CurrencyCode)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.Account.CurrencyCode)
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="card-footer">
+                    <form method="post">
+                        <input type="hidden" asp-for="Account.Id"/>
+                        <input type="submit" value="Видалити" class="btn btn-danger"/> |
+                        <a asp-page="./Index">Повернутись назад</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

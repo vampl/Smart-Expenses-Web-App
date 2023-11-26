@@ -1,0 +1,22 @@
+﻿@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Підтвердження реєстрації";
+}
+
+<h1>@ViewData["Title"]</h1>
+@{
+    if (Model.DisplayConfirmAccountLink)
+    {
+        <p>
+            Цей додаток наразі не реалізовує реального відправника електронних листів. <a id="confirm-link" href="@Model.EmailConfirmationUrl">Натисніть тут аби підтвердити ваш обліковий запис.</a>
+        </p>
+    }
+    else
+    {
+        <p>
+            Будь-ласка перевірте вашу електронну пошту.
+        </p>
+    }
+}
+

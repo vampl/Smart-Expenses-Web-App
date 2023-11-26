@@ -1,44 +1,64 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+
+<html lang="en" class="h-100">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - smart_expenses_web_app</title>
+
+    <title>@ViewData["Title"] - Розумні витрати</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/smart_expenses_web_app.styles.css" asp-append-version="true"/>
 </head>
-<body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-page="/Index">smart_expenses_web_app</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                    </li>
-                </ul>
+
+<body class="d-flex flex-column h-100">
+
+<header class="border-bottom py-3 mb-4">
+    <div class="container">
+        <nav class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between">
+            <div class="col-md-3 mb-3">
+                <a class="navbar-brand d-inline-flex" asp-area="" asp-page="/Index">Розумні витрати</a>
             </div>
-        </div>
-    </nav>
+
+            <ul class="nav nav-pills col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link active px-2" asp-area="" asp-page="/Index">Головна</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link px-2" asp-area="" asp-page="/Transaction/Index">Транзакції</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link px-2" asp-area="" asp-page="/Account/Index">Рахунки</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link px-2" asp-area="" asp-page="/About">Про нас</a>
+                </li>
+            </ul>
+
+            <div class="col-md-3">
+                <partial name="_LoginPartial"/>
+            </div>
+        </nav>
+    </div>
 </header>
+
 <div class="container">
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2023 - smart_expenses_web_app - <a asp-area="" asp-page="/Privacy">Privacy</a>
+<footer class="footer mt-auto py-3 bg-body-tertiary border-top">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+        <div class="col-md-4 d-flex align-items-center">
+            <span class="mb-3 mb-md-0 text-body-secondary">© 2023 Розумні витрати, Барабаш В. О.</span>
+        </div>
+        
+        <a asp-area="" asp-page="/Privacy">Конфіденційність</a>
     </div>
 </footer>
 
